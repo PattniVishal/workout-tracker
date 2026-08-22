@@ -1,0 +1,81 @@
+---
+description: Spring Boot backend development rules
+globs:
+  - "backend/**/*.java"
+alwaysApply: false
+---
+
+# Backend Development Rules
+
+## Java
+
+- Use Java 21.
+- Prefer clear and readable code.
+- Use records for immutable DTOs when appropriate.
+- Avoid unnecessary abstractions.
+
+## Spring Boot
+
+Use:
+
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- Bean Validation
+- Flyway
+
+## Dependency Injection
+
+- Use constructor injection.
+- Do not use field injection.
+
+## Controllers
+
+Controllers should:
+
+- Validate requests.
+- Delegate to services.
+- Return appropriate HTTP responses.
+
+Controllers should not:
+
+- Contain business logic.
+- Directly access repositories.
+
+## Services
+
+- Business logic belongs in services.
+- Use transactions for multi-step database modifications where required.
+- Define clear domain-specific exceptions.
+
+## Validation
+
+Use Bean Validation for request validation.
+
+Examples:
+
+- @NotBlank
+- @NotNull
+- @Positive
+- @Min
+- @Max
+
+Business validation belongs in the service/domain layer.
+
+## Error Handling
+
+Use centralized exception handling.
+
+API errors should be consistent and should include useful information without exposing internal implementation details.
+
+## Testing
+
+For business logic:
+
+- Prefer unit tests.
+
+For important persistence or API flows:
+
+- Add integration tests.
+
+Do not generate tests that only verify framework behavior.

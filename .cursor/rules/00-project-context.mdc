@@ -1,0 +1,69 @@
+---
+description: Overall project context and product constraints
+alwaysApply: true
+---
+
+# Workout Tracker Project Context
+
+## Product
+
+This is a Workout Tracker web application.
+
+The MVP allows users to:
+
+- Manage exercises
+- Create workout routines
+- Add multiple exercises to a routine
+- Start a workout from a routine
+- Log sets, weight, and repetitions
+- Complete a workout
+- View workout history
+- Track basic exercise progress
+
+## Technology Stack
+
+Frontend:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- React Router
+- TanStack Query
+
+Backend:
+- Java 21
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- PostgreSQL
+- Flyway
+- Bean Validation
+
+Architecture:
+- Modular monolith
+- REST API
+- PostgreSQL relational database
+
+## Important Constraints
+
+- Do not introduce microservices.
+- Do not introduce Kafka, gRPC, GraphQL, or other unnecessary infrastructure.
+- Prefer simple and maintainable solutions.
+- Do not add features outside the approved MVP scope without explicitly mentioning them.
+- Preserve historical workout data when workout routines are later modified.
+- Mobile usability is important, especially for the active workout screen.
+
+## Source of Truth
+
+Before implementing a feature, read the relevant documentation under:
+
+- docs/product/
+- docs/architecture/
+- docs/database/
+- docs/api/
+- docs/features/
+- docs/diagrams/
+
+If requirements conflict, do not silently choose an interpretation. Highlight the conflict.

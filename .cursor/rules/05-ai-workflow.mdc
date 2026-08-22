@@ -1,0 +1,46 @@
+---
+description: AI implementation workflow and safety rules
+alwaysApply: true
+---
+
+# AI Development Workflow
+
+For any non-trivial feature, follow this process:
+
+1. Analyze relevant requirements and documentation.
+2. Identify affected modules.
+3. Identify affected APIs.
+4. Identify database changes.
+5. Identify documentation and diagram changes.
+6. Create an implementation plan.
+7. List files that will be created or modified.
+8. List assumptions and risks.
+9. Wait for approval before making major changes.
+
+## Small Changes
+
+For small, isolated changes, implementation can proceed directly if the request is explicit and low-risk.
+
+## Before Coding
+
+Do not begin a large feature by generating all code at once.
+
+Break the work into small, reviewable steps.
+
+## After Coding
+
+Before declaring a feature complete:
+
+1. Review the changed code.
+2. Check for inconsistencies with project documentation.
+3. Run relevant tests if available.
+4. Check for missing validation.
+5. Check error handling.
+6. Check database migration correctness.
+7. Identify follow-up work.
+
+## Documentation
+
+When implementation changes architecture, API contracts, database structure, or major domain relationships, update the corresponding documentation.
+
+Do not change documentation merely to justify incorrect code.

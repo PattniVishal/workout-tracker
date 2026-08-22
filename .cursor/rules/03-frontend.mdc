@@ -1,0 +1,58 @@
+---
+description: React frontend development rules
+globs:
+  - "frontend/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Frontend Development Rules
+
+## Technology
+
+Use:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- React Router
+- TanStack Query
+
+## Components
+
+- Use functional components.
+- Keep components focused on a single responsibility.
+- Extract reusable components when repetition is meaningful.
+- Do not over-componentize trivial UI.
+
+## TypeScript
+
+- Avoid `any`.
+- Define clear types for API requests and responses.
+- Reuse shared domain types where appropriate.
+
+## API Communication
+
+- Do not make duplicate API calls from multiple components.
+- Keep API logic separate from UI components.
+- Use TanStack Query for server-state management.
+
+## Responsive Design
+
+The application must work well on:
+
+- Desktop
+- Tablet
+- Mobile
+
+The active workout experience is mobile-first.
+
+Touch targets should be suitable for mobile use.
+
+## UI Principles
+
+- Fast workout logging.
+- Minimal unnecessary interactions.
+- Clear visual hierarchy.
+- Avoid clutter.

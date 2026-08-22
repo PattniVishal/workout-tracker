@@ -1,0 +1,64 @@
+---
+description: Architecture and design rules
+alwaysApply: true
+---
+
+# Architecture Rules
+
+## Architecture Style
+
+The application is a modular monolith.
+
+The backend should be organized by feature or module where practical.
+
+Example modules:
+
+- auth
+- exercise
+- workout
+- history
+- progress
+
+Do not split the application into independently deployable microservices.
+
+## Layering
+
+Within a backend module, use clear separation between:
+
+- Controller
+- Service
+- Repository
+- Domain / Entity
+- DTO
+
+Controllers:
+- Handle HTTP concerns.
+- Validate requests.
+- Delegate to services.
+- Must not contain business logic.
+
+Services:
+- Contain business logic.
+- Manage transactions where appropriate.
+- Coordinate repositories and domain objects.
+
+Repositories:
+- Handle persistence only.
+- Must not contain business workflows.
+
+## API Boundaries
+
+- Never expose JPA entities directly from REST controllers.
+- Use request DTOs and response DTOs.
+- Keep API models independent from persistence models.
+
+## Design Changes
+
+Before changing an existing architecture:
+
+1. Explain the reason.
+2. Identify impacted modules.
+3. Identify impacted documentation.
+4. Propose the change before implementing it.
+
+Do not silently perform large architectural refactors.

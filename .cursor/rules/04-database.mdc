@@ -1,0 +1,57 @@
+---
+description: PostgreSQL and Flyway database rules
+globs:
+  - "backend/src/main/resources/db/migration/**"
+  - "backend/**/*Entity.java"
+alwaysApply: false
+---
+
+# Database Rules
+
+## Database
+
+Use PostgreSQL.
+
+## Schema Changes
+
+All schema changes must use Flyway migrations.
+
+Do not rely on Hibernate automatic schema creation or updates.
+
+Use:
+
+- ddl-auto=validate
+
+Do not use:
+
+- ddl-auto=create
+- ddl-auto=create-drop
+- ddl-auto=update
+
+for controlled environments.
+
+## Migration Naming
+
+Use:
+
+V1__initial_schema.sql
+V2__create_exercise_tables.sql
+V3__create_workout_routine_tables.sql
+
+Migration names should clearly describe the change.
+
+## Data Modeling
+
+- Use primary keys consistently.
+- Define foreign key relationships explicitly.
+- Add indexes based on expected query patterns.
+- Add constraints where the database can enforce business invariants.
+- Avoid storing unrelated entities as JSON when a relational model is appropriate.
+
+## Historical Data
+
+Completed workout data must remain historically accurate.
+
+Changing a workout routine later must not modify completed workout records.
+
+Do not make destructive schema changes without explicitly identifying migration and data risks.
