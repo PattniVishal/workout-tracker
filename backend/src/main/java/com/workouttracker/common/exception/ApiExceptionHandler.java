@@ -49,6 +49,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        log.warn("Login failed: invalid credentials");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiErrorResponse.of(
                         HttpStatus.UNAUTHORIZED.value(),
@@ -59,6 +60,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     public ResponseEntity<ApiErrorResponse> handleEmailAlreadyRegistered(EmailAlreadyRegisteredException ex) {
+        log.warn("Registration conflict: email already registered");
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiErrorResponse.of(
                         HttpStatus.CONFLICT.value(),
@@ -89,6 +91,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(SystemExerciseMutationException.class)
     public ResponseEntity<ApiErrorResponse> handleSystemExerciseMutation(SystemExerciseMutationException ex) {
+        log.warn("Forbidden system exercise mutation attempt");
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiErrorResponse.of(
                         HttpStatus.FORBIDDEN.value(),
@@ -109,6 +112,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(DuplicateRoutineExerciseException.class)
     public ResponseEntity<ApiErrorResponse> handleDuplicateRoutineExercise(DuplicateRoutineExerciseException ex) {
+        log.warn("Routine conflict: duplicate exercise");
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiErrorResponse.of(
                         HttpStatus.CONFLICT.value(),
@@ -119,6 +123,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ActiveSessionExistsException.class)
     public ResponseEntity<ApiErrorResponse> handleActiveSessionExists(ActiveSessionExistsException ex) {
+        log.warn("Workout session conflict: active session already exists");
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiErrorResponse.of(
                         HttpStatus.CONFLICT.value(),
@@ -159,6 +164,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(NoCompletedSetsException.class)
     public ResponseEntity<ApiErrorResponse> handleNoCompletedSets(NoCompletedSetsException ex) {
+        log.warn("Workout completion rejected: no completed sets");
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiErrorResponse.of(
                         HttpStatus.CONFLICT.value(),
@@ -199,6 +205,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        log.debug("Request validation failed with {} field error(s)", ex.getBindingResult().getFieldErrorCount());
         List<FieldErrorResponse> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()

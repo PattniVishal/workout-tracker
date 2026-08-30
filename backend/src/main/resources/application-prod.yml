@@ -7,3 +7,11 @@ server:
     session:
       cookie:
         secure: true
+
+logging:
+  level:
+    root: INFO
+    com.workouttracker: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.hibernate.SQL: WARN

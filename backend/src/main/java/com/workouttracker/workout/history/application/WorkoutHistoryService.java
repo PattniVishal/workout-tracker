@@ -12,6 +12,8 @@ import com.workouttracker.workout.session.domain.WorkoutSession;
 import com.workouttracker.workout.session.domain.WorkoutSessionStatus;
 import com.workouttracker.workout.session.domain.WorkoutSet;
 import com.workouttracker.workout.session.infrastructure.WorkoutSessionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import java.util.UUID;
 
 @Service
 public class WorkoutHistoryService {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkoutHistoryService.class);
 
     private final WorkoutSessionRepository workoutSessionRepository;
     private final CurrentUser currentUser;
@@ -62,6 +66,7 @@ public class WorkoutHistoryService {
         WorkoutSession session = requireCompletedSession(sessionId, userId);
         workoutSessionRepository.delete(session);
         workoutSessionRepository.flush();
+        log.info("Workout history deleted userId={} sessionId={}", userId, sessionId);
     }
 
     @Transactional(readOnly = true)

@@ -12,6 +12,8 @@ import com.workouttracker.workout.routine.domain.RoutineExercise;
 import com.workouttracker.workout.routine.domain.RoutineExerciseSlot;
 import com.workouttracker.workout.routine.domain.WorkoutRoutine;
 import com.workouttracker.workout.routine.infrastructure.WorkoutRoutineRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class WorkoutRoutineService {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkoutRoutineService.class);
 
     private final WorkoutRoutineRepository workoutRoutineRepository;
     private final ExerciseService exerciseService;
@@ -69,7 +73,9 @@ public class WorkoutRoutineService {
         WorkoutRoutine routine = WorkoutRoutine.create(userId, request.name(), request.description());
         routine.addExerciseSlots(toDomainSlots(slots));
 
-        return toDetailResponse(workoutRoutineRepository.save(routine), toExerciseNameMap(slots));
+        WorkoutRoutine saved = workoutRoutineRepository.save(routine);
+        log.info("Routine created userId={} routineId={}", userId, saved.getId());
+        return toDetailResponse(saved, toExerciseNameMap(slots));
     }
 
     @Transactional
@@ -86,6 +92,7 @@ public class WorkoutRoutineService {
         workoutRoutineRepository.flush();
         routine.addExerciseSlots(toDomainSlots(slots));
 
+        log.info("Routine updated userId={} routineId={}", userId, routineId);
         return toDetailResponse(routine, toExerciseNameMap(slots));
     }
 
@@ -96,6 +103,7 @@ public class WorkoutRoutineService {
             throw new RoutineNotFoundException();
         }
         workoutRoutineRepository.deleteByIdAndUserId(routineId, userId);
+        log.info("Routine deleted userId={} routineId={}", userId, routineId);
     }
 
     private WorkoutRoutine requireOwnedRoutine(UUID routineId, UUID userId) {

@@ -14,6 +14,8 @@ import com.workouttracker.workout.session.api.UpdateSetRequest;
 import com.workouttracker.workout.session.domain.WorkoutSession;
 import com.workouttracker.workout.session.domain.WorkoutSessionStatus;
 import com.workouttracker.workout.session.infrastructure.WorkoutSessionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,8 @@ import java.util.UUID;
 
 @Service
 public class WorkoutSessionService {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkoutSessionService.class);
 
     private final WorkoutSessionRepository workoutSessionRepository;
     private final WorkoutRoutineRepository workoutRoutineRepository;
@@ -58,11 +62,15 @@ public class WorkoutSessionService {
             throw new InvalidSessionStartRequestException();
         }
 
+        SessionResponse response;
         if (hasRoutine) {
-            return startFromRoutine(userId, request.routineId());
+            response = startFromRoutine(userId, request.routineId());
+        } else {
+            response = startEmpty(userId, request.name().trim());
         }
 
-        return startEmpty(userId, request.name().trim());
+        log.info("Workout session started userId={} sessionId={}", userId, response.id());
+        return response;
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +87,14 @@ public class WorkoutSessionService {
         WorkoutSession session = requireInProgressSession(userId);
         Exercise exercise = exerciseService.requirePickable(request.exerciseId(), userId);
         session.addExercise(exercise.getId(), exercise.getName(), request.initialSetCount());
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info(
+                "Workout exercise added userId={} sessionId={} exerciseId={}",
+                userId,
+                saved.getId(),
+                request.exerciseId()
+        );
+        return toResponse(saved);
     }
 
     @Transactional
@@ -87,7 +102,14 @@ public class WorkoutSessionService {
         UUID userId = currentUser.requireUserId();
         WorkoutSession session = requireInProgressSession(userId);
         session.removeExercise(workoutExerciseId);
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info(
+                "Workout exercise removed userId={} sessionId={} workoutExerciseId={}",
+                userId,
+                saved.getId(),
+                workoutExerciseId
+        );
+        return toResponse(saved);
     }
 
     @Transactional
@@ -95,7 +117,14 @@ public class WorkoutSessionService {
         UUID userId = currentUser.requireUserId();
         WorkoutSession session = requireInProgressSession(userId);
         session.addSet(workoutExerciseId);
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info(
+                "Workout set added userId={} sessionId={} workoutExerciseId={}",
+                userId,
+                saved.getId(),
+                workoutExerciseId
+        );
+        return toResponse(saved);
     }
 
     @Transactional
@@ -103,7 +132,15 @@ public class WorkoutSessionService {
         UUID userId = currentUser.requireUserId();
         WorkoutSession session = requireInProgressSession(userId);
         session.updateSet(workoutExerciseId, setId, request.weightKg(), request.repetitions(), request.completed());
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info(
+                "Workout set updated userId={} sessionId={} workoutExerciseId={} setId={}",
+                userId,
+                saved.getId(),
+                workoutExerciseId,
+                setId
+        );
+        return toResponse(saved);
     }
 
     @Transactional
@@ -113,7 +150,15 @@ public class WorkoutSessionService {
         session.removeSet(workoutExerciseId, setId);
         workoutSessionRepository.saveAndFlush(session);
         session.renumberSets(workoutExerciseId);
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info(
+                "Workout set removed userId={} sessionId={} workoutExerciseId={} setId={}",
+                userId,
+                saved.getId(),
+                workoutExerciseId,
+                setId
+        );
+        return toResponse(saved);
     }
 
     @Transactional
@@ -121,15 +166,19 @@ public class WorkoutSessionService {
         UUID userId = currentUser.requireUserId();
         WorkoutSession session = requireInProgressSession(userId);
         session.complete(Instant.now());
-        return toResponse(workoutSessionRepository.saveAndFlush(session));
+        WorkoutSession saved = workoutSessionRepository.saveAndFlush(session);
+        log.info("Workout session completed userId={} sessionId={}", userId, saved.getId());
+        return toResponse(saved);
     }
 
     @Transactional
     public void discard() {
         UUID userId = currentUser.requireUserId();
         WorkoutSession session = requireInProgressSession(userId);
+        UUID sessionId = session.getId();
         workoutSessionRepository.delete(session);
         workoutSessionRepository.flush();
+        log.info("Workout session discarded userId={} sessionId={}", userId, sessionId);
     }
 
     private WorkoutSession requireInProgressSession(UUID userId) {
@@ -162,6 +211,7 @@ public class WorkoutSessionService {
             return workoutSessionRepository.saveAndFlush(session);
         } catch (DataIntegrityViolationException ex) {
             if (ActiveSessionConflictDetector.isActiveSessionConflict(ex)) {
+                log.warn("Active workout session conflict userId={}", session.getUserId());
                 throw new ActiveSessionExistsException();
             }
             throw ex;
@@ -170,6 +220,7 @@ public class WorkoutSessionService {
 
     private void assertNoActiveSession(UUID userId) {
         if (workoutSessionRepository.existsByUserIdAndStatus(userId, WorkoutSessionStatus.IN_PROGRESS)) {
+            log.warn("Active workout session conflict userId={}", userId);
             throw new ActiveSessionExistsException();
         }
     }

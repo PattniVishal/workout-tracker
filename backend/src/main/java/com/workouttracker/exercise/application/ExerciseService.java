@@ -7,6 +7,8 @@ import com.workouttracker.exercise.api.ExerciseResponse;
 import com.workouttracker.exercise.domain.Exercise;
 import com.workouttracker.exercise.domain.ExerciseSource;
 import com.workouttracker.exercise.infrastructure.ExerciseRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @Service
 public class ExerciseService {
+
+    private static final Logger log = LoggerFactory.getLogger(ExerciseService.class);
 
     private final ExerciseRepository exerciseRepository;
     private final CurrentUser currentUser;
@@ -30,6 +34,13 @@ public class ExerciseService {
         UUID userId = currentUser.requireUserId();
         String normalizedQuery = normalizeOptionalFilter(q);
         String normalizedMuscleGroup = normalizeOptionalFilter(muscleGroup);
+
+        log.debug(
+                "Listing pickable exercises userId={} qPresent={} muscleGroupPresent={}",
+                userId,
+                !normalizedQuery.isEmpty(),
+                !normalizedMuscleGroup.isEmpty()
+        );
 
         List<ExerciseResponse> exercises = exerciseRepository
                 .findPickable(userId, normalizedQuery, normalizedMuscleGroup)
@@ -50,7 +61,9 @@ public class ExerciseService {
                 request.category(),
                 userId
         );
-        return toResponse(exerciseRepository.save(exercise));
+        Exercise saved = exerciseRepository.save(exercise);
+        log.info("Custom exercise created userId={} exerciseId={}", userId, saved.getId());
+        return toResponse(saved);
     }
 
     @Transactional
@@ -63,6 +76,7 @@ public class ExerciseService {
                 request.secondaryMuscleGroups(),
                 request.category()
         );
+        log.info("Custom exercise updated userId={} exerciseId={}", userId, exerciseId);
         return toResponse(exercise);
     }
 
@@ -72,6 +86,7 @@ public class ExerciseService {
         Exercise exercise = requireOwnedCustom(exerciseId, userId);
         if (!exercise.isArchived()) {
             exercise.archive(Instant.now());
+            log.info("Custom exercise archived userId={} exerciseId={}", userId, exerciseId);
         }
     }
 
