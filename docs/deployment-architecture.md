@@ -480,9 +480,9 @@ SESSION_COOKIE_SAME_SITE=lax
 **Docker Compose** (root `.env` from `.env.example`):
 
 ```
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=/api
 DATABASE_URL=jdbc:postgresql://postgres:5432/workout_tracker
-CORS_ALLOWED_ORIGINS=http://localhost:5173
+CORS_ALLOWED_ORIGINS=http://localhost:8080
 ...
 ```
 
@@ -555,8 +555,11 @@ Same-origin: session cookies and CSRF operate through Nginx without cross-origin
 
 ### Phase B16 — CI
 
-- [x] GitHub Actions backend workflow (tests, package, Docker build)
-- [x] GitHub Actions frontend workflow (tests, build, Docker build)
+- [x] GitHub Actions backend workflow (tests, package, `docker build ./backend`)
+- [x] GitHub Actions frontend workflow (tests, build, `docker build ./frontend`)
+- [x] `docker compose config` validation (backend workflow)
+- [x] Maven wrapper executable on Linux CI (`chmod +x mvnw`)
+- [x] Least-privilege workflow permissions (`contents: read`)
 - [x] No deployment in CI
 
 ### Phase B17 — AWS foundation (planned)
