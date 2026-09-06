@@ -67,7 +67,8 @@ describe('WorkoutHistoryListPage', () => {
 
     await screen.findByRole('heading', { name: 'History' })
 
-    expect(screen.getAllByText(/Completed \d/i).length).toBeGreaterThanOrEqual(1)
+    // Locale-independent: fixture dates are in 2026; avoid assuming day-first vs month-first formatting.
+    expect(screen.getAllByText(/^Completed .+2026/)).toHaveLength(2)
   })
 
   it('displays duration, exercise count, and completed set count', async () => {
