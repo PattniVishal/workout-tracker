@@ -409,22 +409,18 @@ Swagger UI (`/swagger-ui/index.html`) is publicly accessible when enabled. For p
 Developer
    |
    v
-GitHub (push / PR to main)
+GitHub (merge to main / pull request)
    |
    v
 GitHub Actions
    |
    +-- backend-ci.yml
-   |     +-- Maven tests (./mvnw test)
-   |     +-- Package (./mvnw package)
-   |     +-- Docker build validation
-   |     +-- docker compose config validation
+   |     +-- pull request (any → any): pr-source-tests (source branch, Maven tests only)
+   |     +-- push to main (merge): tests, package, Docker build, Compose config
    |
    +-- frontend-ci.yml
-         +-- npm ci
-         +-- npm run test
-         +-- npm run build
-         +-- Docker build validation
+         +-- pull request (any → any): pr-source-tests (source branch, npm tests only)
+         +-- push to main (merge): npm ci, tests, build, Docker build
 ```
 
 Workflows use **path filters** so backend and frontend changes trigger only the relevant pipeline. **No deployment steps exist yet.** No AWS credentials or secrets are used in CI today.

@@ -8,7 +8,7 @@ on:
       - 'compose.yaml'
       - '.github/workflows/frontend-ci.yml'
   pull_request:
-    branches: [main]
+    types: [opened, synchronize, reopened]
     paths:
       - 'frontend/**'
       - 'compose.yaml'
@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   test-and-build:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     defaults:
@@ -50,3 +51,30 @@ jobs:
       - name: Verify Docker image builds
         working-directory: ${{ github.workspace }}
         run: docker build --build-arg VITE_API_BASE_URL=/api -t workout-tracker-frontend:ci ./frontend
+
+  pr-source-tests:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests from source branch
+        run: npm run test

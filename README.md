@@ -207,10 +207,14 @@ docker compose config
 
 ## CI (GitHub Actions)
 
-| Workflow | Triggers | Validates |
+| Workflow | Triggers | What runs |
 |----------|----------|-----------|
-| `.github/workflows/backend-ci.yml` | `backend/**`, `compose.yaml` | Maven tests, package, `docker build ./backend`, `docker compose config` |
-| `.github/workflows/frontend-ci.yml` | `frontend/**`, `compose.yaml` | `npm ci`, tests, production build (`VITE_API_BASE_URL=/api`), `docker build ./frontend` |
+| `.github/workflows/backend-ci.yml` | PR (any branch → any branch) | `pr-source-tests` — source branch tests only |
+| | Push to `main` (e.g. merge) | Full pipeline: tests, package, Docker build, Compose config |
+| `.github/workflows/frontend-ci.yml` | PR (any branch → any branch) | `pr-source-tests` — source branch tests only |
+| | Push to `main` (e.g. merge) | Full pipeline: `npm ci`, tests, build, Docker build |
+
+**Push to feature branches does not run CI.** Only pull requests (tests) and merges to `main` (full pipeline) trigger workflows.
 
 Deployments to AWS are **not** configured yet. Future workflows should use GitHub Secrets / AWS OIDC — never commit credentials.
 
