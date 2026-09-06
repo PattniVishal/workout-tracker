@@ -1,0 +1,38 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!**/.env.production.example
+**/.env
+**/.env.local
+*.local
+
+# Docker local overrides (copy from compose.override.example.yaml)
+compose.override.yaml
+
+# Backend (Java / Maven)
+backend/target/
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

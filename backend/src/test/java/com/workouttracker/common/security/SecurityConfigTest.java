@@ -82,6 +82,13 @@ class SecurityConfigTest {
     }
 
     @Test
+    void healthEndpointIsPublic() throws Exception {
+        mockMvc.perform(get("/actuator/health").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+    }
+
+    @Test
     void corsPreflightForConfiguredFrontendOriginIsAllowed() throws Exception {
         mockMvc.perform(options("/api/test/protected")
                         .header(HttpHeaders.ORIGIN, "http://localhost:5173")
