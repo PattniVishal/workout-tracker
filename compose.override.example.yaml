@@ -1,0 +1,13 @@
+# Optional local overrides for debugging (copy to compose.override.yaml — gitignored).
+# Not required for the production-like same-origin stack.
+#
+# Example: expose PostgreSQL and backend directly on the host for non-Docker tools.
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  backend:
+    ports:
+      - "8080:8080"

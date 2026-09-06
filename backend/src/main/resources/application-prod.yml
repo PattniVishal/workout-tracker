@@ -1,0 +1,19 @@
+# Production profile: enable Secure session cookies for HTTPS deployments.
+# Activate with: SPRING_PROFILES_ACTIVE=prod
+# Or set SESSION_COOKIE_SECURE=true in any profile.
+
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: ${SESSION_COOKIE_SAME_SITE:none}
+
+logging:
+  level:
+    root: INFO
+    com.workouttracker: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.hibernate.SQL: WARN
