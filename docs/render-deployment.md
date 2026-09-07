@@ -49,7 +49,9 @@ Do **not** set `VITE_API_BASE_URL` to the backend URL at runtime. It is a **buil
 
 ### Health check
 
-Use path: `/actuator/health` (proxied to backend through Nginx).
+Path: `/`
+
+Nginx serves the React app at `/` (`index.html` with SPA fallback). There is no separate frontend health endpoint; use `/` to verify the Nginx web service is responding. Do **not** use `/actuator/health` here — that is a Spring Boot backend endpoint (Nginx only proxies it to the backend when requested through the frontend URL).
 
 ## Backend web service
 
@@ -83,6 +85,8 @@ Flyway runs automatically on backend startup when the database is reachable.
 ### Health check
 
 Path: `/actuator/health`
+
+This is the Spring Boot actuator endpoint exposed by the backend service directly (not via the frontend Nginx proxy).
 
 ## Session, CSRF, and cookies
 
