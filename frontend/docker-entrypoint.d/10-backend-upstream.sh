@@ -2,6 +2,7 @@
 set -eu
 
 # Defaults match Docker Compose (service name + internal port).
+export NGINX_BACKEND_PROTOCOL="${NGINX_BACKEND_PROTOCOL:-http}"
 export NGINX_BACKEND_HOST="${NGINX_BACKEND_HOST:-backend}"
 export NGINX_BACKEND_PORT="${NGINX_BACKEND_PORT:-8080}"
 
