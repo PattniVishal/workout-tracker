@@ -18,6 +18,7 @@ This document describes the **finalized deployment architecture** for the Workou
 | HTTPS + custom domain | **Planned** (Phase B19) |
 | Automated CD to EC2 | **Planned** (Phase B20) |
 | AWS resources (EC2 instance, domain, TLS) | **Not deployed yet** |
+| Temporary Render deployment (validation only) | **Prepared** — see [render-deployment.md](render-deployment.md); not the production architecture |
 
 ---
 

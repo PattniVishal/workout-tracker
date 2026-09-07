@@ -229,6 +229,8 @@ See **[docs/deployment-architecture.md](docs/deployment-architecture.md)** for:
 - Environment variable checklist
 - Deployment roadmap (phases B16–B20)
 
+For a **temporary** Render validation environment (while AWS account review is pending), see **[docs/render-deployment.md](docs/render-deployment.md)**. The finalized production architecture remains EC2 + Docker Compose + Nginx.
+
 ---
 
 ## API documentation

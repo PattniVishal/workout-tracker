@@ -1,13 +1,13 @@
 server {
-    listen 80;
+    listen ${NGINX_LISTEN_PORT};
     server_name _;
 
     root /usr/share/nginx/html;
     index index.html;
 
-    # API requests proxied to Spring Boot (Compose service name).
+    # API requests proxied to Spring Boot (upstream host/port from environment).
     location /api/ {
-        proxy_pass http://backend:8080/api/;
+        proxy_pass http://${NGINX_BACKEND_HOST}:${NGINX_BACKEND_PORT}/api/;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -18,7 +18,7 @@ server {
 
     # Optional same-origin access to API docs and health checks.
     location /swagger-ui {
-        proxy_pass http://backend:8080;
+        proxy_pass http://${NGINX_BACKEND_HOST}:${NGINX_BACKEND_PORT};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -28,7 +28,7 @@ server {
     }
 
     location /v3/api-docs {
-        proxy_pass http://backend:8080;
+        proxy_pass http://${NGINX_BACKEND_HOST}:${NGINX_BACKEND_PORT};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -38,7 +38,7 @@ server {
     }
 
     location /actuator/ {
-        proxy_pass http://backend:8080;
+        proxy_pass http://${NGINX_BACKEND_HOST}:${NGINX_BACKEND_PORT};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

@@ -8,7 +8,7 @@ server:
     session:
       cookie:
         secure: true
-        same-site: ${SESSION_COOKIE_SAME_SITE:none}
+        same-site: ${SESSION_COOKIE_SAME_SITE:lax}
 
 logging:
   level:

@@ -16,10 +16,18 @@ RUN npm run build
 
 FROM nginx:1.27-alpine AS runtime
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV NGINX_BACKEND_HOST=backend
+ENV NGINX_BACKEND_PORT=8080
+ENV NGINX_LISTEN_PORT=80
+
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY docker-entrypoint.d/10-backend-upstream.sh /docker-entrypoint.d/10-backend-upstream.sh
+RUN sed -i 's/\r$//' /docker-entrypoint.d/10-backend-upstream.sh \
+    && chmod +x /docker-entrypoint.d/10-backend-upstream.sh
+
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD wget -q --spider http://127.0.0.1/actuator/health || exit 1
+  CMD sh -c 'wget -q --spider "http://127.0.0.1:${PORT:-${NGINX_LISTEN_PORT:-80}}/actuator/health" || exit 1'
