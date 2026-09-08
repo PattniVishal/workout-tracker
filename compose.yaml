@@ -50,6 +50,8 @@ services:
     restart: unless-stopped
     ports:
       - "${COMPOSE_HTTP_PORT:-8080}:80"
+    volumes:
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       backend:
         condition: service_healthy
